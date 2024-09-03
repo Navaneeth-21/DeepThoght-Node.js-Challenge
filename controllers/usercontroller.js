@@ -3,12 +3,12 @@ const {main} = require('../config/db');
 
 // GET REQUEST - '/events?id=:event_id' => Gets an event by its unique id
 const getEvents = async (req,res) => {
-    const {id} = req.query;
-    if(!id) return res.status(400).json({message:'Please Provide event id'})
+    const event_id = req.params.id;
+    if(!event_id) return res.status(400).json({message:'Please Provide event id'})
 
     const {collection} = await main();
 
-    let eventId = ObjectId.createFromHexString(id);
+    let eventId = ObjectId.createFromHexString(event_id);
 
     try {
         const events = await collection.findOne({_id:eventId});
@@ -27,7 +27,34 @@ GET REQUEST
 '/events?type=latest&limit=5&page=1'
 Gets an event by its recency & paginate results by page number and limit of events per page
 */ 
+const getEventByQuery = async (req,res) => {
+    const type = req.query.type || 'latest' ;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
 
+    const {collection} = await main();
+
+    const query = {type};
+    const options = {
+        // based on the creation of the event of 'schedule' field
+        sort :{schedule:-1}, 
+        skip: skip,
+        limit: limit
+    };
+
+    try {
+        const eventData = await collection.find(query,options).toArray();
+        
+        if(!eventData){
+            return res.status(404).json({message:'No Data found'});
+        }
+        return res.status(200).json(eventData);
+    } catch (error) {
+        return res.status(500).json({message:error.message});
+    }
+    
+};
 
 
 /* 
@@ -86,4 +113,4 @@ const deleteEvent = async (req,res) => {
 
 
 
-module.exports = {getEvents,createEvent,deleteEvent};
+module.exports = {getEvents,getEventByQuery,createEvent,deleteEvent};
