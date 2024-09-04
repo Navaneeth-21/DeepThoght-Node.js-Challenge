@@ -1,8 +1,8 @@
 # Nudge API Documentation
 The API allows clients to perform CRUD (Create, Read, Update, Delete) operations on Nudges. Below is the detailed documentation of the API endpoints, request types, payloads, and descriptions.
 
-## BASE URL
-```
+### BASE URL
+```sh
     https://api.yourapp.com/v1
 ```
 
@@ -42,7 +42,6 @@ The API allows clients to perform CRUD (Create, Read, Update, Delete) operations
   - eventId (optional): UUID of the event to filter nudges.
   - limit (optional): Number of nudges to retrieve.
   - offset (optional): Pagination offset.
-
 - Response:
     - Status: 200 OK
 
@@ -66,7 +65,6 @@ The API allows clients to perform CRUD (Create, Read, Update, Delete) operations
     - nudgeId(UUID): ID of the nudge to update.
  - Payload:
     - The fields to be updated
-
  - Response:
     - Status: 200 OK
 
