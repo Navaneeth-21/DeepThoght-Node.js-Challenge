@@ -21,10 +21,6 @@ async function main() {
         console.log(err);      
         return null;
     }
-    // finally{
-    //     await client.close();
-    //     console.log('Database connection closed');
-    // }
     
 };
 
