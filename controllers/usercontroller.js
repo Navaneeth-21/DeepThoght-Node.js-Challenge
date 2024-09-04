@@ -86,6 +86,31 @@ PUT REQUEST
 /events/:id
 Same as POST payload
 */ 
+const updateEvent = async (req,res) => {
+    const event_id = req.params.id;
+    if(!event_id){
+        return res.status(401).json({message:'Please Provide id'})
+    }
+    
+    const event = req.body;
+    const eventId = ObjectId.createFromHexString(event_id)
+    const {collection} = await main();
+
+    try {
+        const data = await collection.updateOne(
+            {_id:eventId},
+            {
+                $set:{ ...event}, // Spreading the event object fields 
+                
+            }
+        );
+        if(!data) return res.status(404).json({message:'Data Not Found'})
+        
+        return res.status(200).json(data)
+    } catch (error) {
+        return res.status(500).json({message:'Internal Server Error'});
+    }
+}
 
 
 
@@ -104,7 +129,7 @@ const deleteEvent = async (req,res) => {
 
     try {
         const deleteResult = await collection.deleteOne({_id:eventId});
-        if(deleteResult) return res.status(201).json(deleteResult);
+        if(deleteResult) return res.status(200).json(deleteResult);
         return res.status(400).json({message:'Unable delete to the event'})
     } catch (error) {
         return res.status(500).json({message:'Internal Server Error'});
@@ -113,4 +138,4 @@ const deleteEvent = async (req,res) => {
 
 
 
-module.exports = {getEvents,getEventByQuery,createEvent,deleteEvent};
+module.exports = {getEvents,getEventByQuery,createEvent,updateEvent,deleteEvent};
